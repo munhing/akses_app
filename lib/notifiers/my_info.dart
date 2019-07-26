@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:akses_app/models/portuser.dart';
+import 'package:akses_app/resources/db_provider.dart';
 
 class MyInfo with ChangeNotifier {
 
@@ -37,4 +38,26 @@ class MyInfo with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void initializeActivePortusersList() async {
+    DbProvider dbProvider = DbProvider.instance;
+    List<Portuser> portusers = List<Portuser>();
+    List<Map<String, dynamic>> maps = await dbProvider.getActivePortUsers();
+
+    if(_plist == null) {
+      _plist = List<Portuser>();
+    }
+
+    print(maps);
+    if (maps != null) {
+      for (int i = 0; i < maps.length; i++) {
+        portusers.add(Portuser.fromDbDuringInitialization(maps[i]));
+      }
+
+      plist = portusers;
+    }
+
+
+  }
+
 }

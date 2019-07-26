@@ -56,11 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final appInfo = Provider.of<MyInfo>(context);
-    if (portusers == null) {
-      portusers = List<Portuser>();
-      initializeActivePortusersList();
-//      appInfo.plist = portusers;
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -167,6 +162,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  @override
+  void initState() {
+    if (portusers == null) {
+      portusers = List<Portuser>();
+      Future.delayed(Duration.zero).then((_) {
+        Provider.of<MyInfo>(context).initializeActivePortusersList();
+      });
+    }
+    super.initState();
+  }
+
   void navigateToList() async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return PortuserListView();
@@ -174,8 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void navigateToPortuserDetailPage(scanData) async {
-    bool result =
-        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ScanUserPage(scanData: scanData);
     }));
   }

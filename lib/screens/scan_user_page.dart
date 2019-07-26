@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:akses_app/resources/db_provider.dart';
 import 'package:akses_app/models/portuser.dart';
+import 'package:provider/provider.dart';
+import 'package:akses_app/notifiers/my_info.dart';
 
 // Todo: query user id from db
 // Todo: add check in/out timestamp to inout table
@@ -170,6 +172,13 @@ class _ScanUserPageState extends State<ScanUserPage> {
 
     int clockingId = await dbProvider.clockingWithActive(
         portuser: portuser, clockingType: clockingType);
+
+    if(clockingType == 1) {
+      Provider.of<MyInfo>(context).portuserCount += 1;
+    } else {
+      Provider.of<MyInfo>(context).portuserCount -= 1;
+    }
+
 
     return clockingId;
   }
