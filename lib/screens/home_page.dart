@@ -184,16 +184,4 @@ class _MyHomePageState extends State<MyHomePage> {
       return ScanUserPage(scanData: scanData);
     }));
   }
-
-  void initializeActivePortusersList() async {
-    DbProvider dbProvider = DbProvider.instance;
-    List<Map<String, dynamic>> maps = await dbProvider.getActivePortUsers();
-
-    print(maps);
-    if (maps != null) {
-      for (int i = 0; i < maps.length; i++) {
-        portusers.add(Portuser.fromDbDuringInitialization(maps[i]));
-      }
-    }
-  }
 }

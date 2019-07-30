@@ -7,6 +7,9 @@ import 'package:akses_app/resources/db_provider.dart';
 import 'package:akses_app/screens/portuser_inout_page.dart';
 import 'package:akses_app/utils/helpers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
+import 'package:akses_app/notifiers/my_info.dart';
+import 'dart:math';
 
 class PortuserListView extends StatefulWidget {
   @override
@@ -19,12 +22,17 @@ class _PortuserListViewState extends State<PortuserListView> {
 
   @override
   Widget build(BuildContext context) {
-    if (portuserList == null) {
-      portuserList = List<Portuser>();
-//      updatePortuserListFromLocalJson();
-//      updatePortuserListFromDb();
-      updatePortuserListFromDbActive();
-    }
+
+//    if (portuserList == null) {
+//      portuserList = List<Portuser>();
+////      updatePortuserListFromLocalJson();
+////      updatePortuserListFromDb();
+//      updatePortuserListFromDbActive();
+//    }
+
+    portuserList = Provider.of<MyInfo>(context).plist;
+    count = Provider.of<MyInfo>(context).portuserCount;
+    print(portuserList[1].name);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,9 +42,9 @@ class _PortuserListViewState extends State<PortuserListView> {
           itemCount: count,
           itemBuilder: (BuildContext context, int position) {
             return ListTile(
-              leading: loadImage(this.portuserList[position]),
+              leading: loadImage(),
               title: Text(this.portuserList[position].name),
-              subtitle: Text(this.portuserList[position].company),
+              subtitle: Text(this.portuserList[position].companyId.toString()),
               trailing: Helpers.inOutIcon(
                   clockType: this.portuserList[position].inOutStatus),
               onTap: () {
@@ -49,24 +57,21 @@ class _PortuserListViewState extends State<PortuserListView> {
     );
   }
 
-  loadImage(Portuser user) {
+  loadImage() {
+
+    var rng = new Random();
+
       return ClipOval(
         child: CachedNetworkImage(
           width: 40.0,
           height: 40.0,
-          imageUrl: 'https://picsum.photos/2509?image=' + user.id.toString(),
+//          imageUrl: 'https://picsum.photos/2509?image=' + user.id.toString(),
+          imageUrl: 'https://picsum.photos/2509?image=' + rng.nextInt(100).toString(),
           placeholder: (context, url) => CircularProgressIndicator(),
           errorWidget: (context, url, error) => Icon(Icons.person),
           fit: BoxFit.cover,
         ),
-      );      
-      
-//      return CachedNetworkImage(
-//        imageUrl: 'https://picsum.photos/2509?image=' + user.id.toString(),
-//        placeholder: (context, url) => new CircularProgressIndicator(),
-//        errorWidget: (context, url, error) => new Icon(Icons.person),
-//      );
-
+      );
   }
 
   Future<String> loadJson() async {

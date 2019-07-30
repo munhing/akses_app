@@ -56,7 +56,7 @@ class _PortuserInOutPageState extends State<PortuserInOutPage> {
 
     DbProvider dbProvider = DbProvider.instance;
 
-    List<Map<String, dynamic>> userInOutMapList = await dbProvider.getPortuserInOutMapList(widget.portuser.id);
+    List<Map<String, dynamic>> userInOutMapList = await dbProvider.getPortuserInOutMapList(widget.portuser.uuid);
 
     setState(() {
       this.count = userInOutMapList.length;

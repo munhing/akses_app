@@ -20,15 +20,4 @@ class Helpers {
     );
   }
 
-  static Future<String> checkAsset(String path) async {
-    String assetPath;
-    print(await rootBundle.loadString(path));
-    try {
-      assetPath = await rootBundle.loadString(path);
-      print(assetPath);
-    } catch (e) {
-      assetPath = null;
-    }
-    return assetPath;
-  }
 }

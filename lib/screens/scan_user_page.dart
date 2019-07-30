@@ -19,36 +19,53 @@ class ScanUserPage extends StatefulWidget {
 class _ScanUserPageState extends State<ScanUserPage> {
   @override
   Widget build(BuildContext context) {
-//    portuser = fetchPortuser(id: scanData);
-//    portuser.then((value) {
-//      print(value.name);
-//    });
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Verify Access"),
-      ),
-      body: FutureBuilder(
-          future: fetchPortuserWithActive(id: widget.scanData),
-          builder: (context, snapshot) {
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          DecoratedBox(
+            decoration: BoxDecoration(color: Colors.white),
+          ),
+          FutureBuilder(
+              future: scanner(scanData: widget.scanData),
+              builder: (context, snapshot) {
 //            if(snapshot.connectionState == ConnectionState.done) {
-            print(snapshot);
-            if (snapshot.data == null) {
-              return Text("Error");
-            }
+                print(snapshot);
+                if (snapshot.data == null) {
+                  return Text("Error");
+                }
 //            return Text("Hello");
-            return userProfile(snapshot.data);
+                return userProfile(snapshot.data);
 
 //            return Container(child: Text(snapshot.data.company));
-          }),
+              }),
+        ],
+      ),
     );
   }
 
   Widget userProfile(user) {
     return SafeArea(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+//        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+              icon: Icon(
+                Icons.close,
+                size: 40.0,
+                color: Colors.black54,
+              ),
+//              shape: CircleBorder(),
+//              color: Colors.red,
+//              textColor: Colors.white,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
           CircleAvatar(
             radius: 50.0,
             // Todo: Load user's photo
@@ -62,7 +79,7 @@ class _ScanUserPageState extends State<ScanUserPage> {
             style: TextStyle(fontSize: 50.0),
           ),
           Text(
-            user.company,
+            user.companyId.toString(),
             style: TextStyle(fontSize: 20.0),
           ),
           Card(
@@ -77,26 +94,12 @@ class _ScanUserPageState extends State<ScanUserPage> {
           Padding(
             padding: const EdgeInsets.all(25.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 inOutButton(user),
               ],
             ),
           ),
 //          SizedBox(height: 10.0,),
-          FlatButton(
-            child: Icon(
-              Icons.cancel,
-              size: 80.0,
-              color: Colors.red,
-            ),
-//              shape: CircleBorder(),
-//              color: Colors.red,
-//              textColor: Colors.white,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )
         ],
       ),
     );
@@ -109,6 +112,8 @@ class _ScanUserPageState extends State<ScanUserPage> {
     IconData buttonIcon;
     String debugText;
     int clockingType;
+
+    print(user.uuid);
 
     if (user.inOutStatus == 1) {
       buttonColor = Colors.redAccent.shade700;
@@ -173,20 +178,46 @@ class _ScanUserPageState extends State<ScanUserPage> {
     int clockingId = await dbProvider.clockingWithActive(
         portuser: portuser, clockingType: clockingType);
 
-    if(clockingType == 1) {
-      Provider.of<MyInfo>(context).portuserCount += 1;
-    } else {
-      Provider.of<MyInfo>(context).portuserCount -= 1;
-    }
-
+    Provider.of<MyInfo>(context).initializeActivePortusersList();
 
     return clockingId;
   }
 
-  Future<Portuser> fetchPortuser({String id}) async {
+  Future<dynamic> scanner({String scanData}) async {
+    DbProvider dbProvider = DbProvider.instance;
+    Map<String, dynamic> scanDataMap = Map<String, dynamic>();
+    Portuser puser;
+
+    // Todo: Determine portuser or vehicle by identifying the type
+    // type=1:Portuser, Type=2:[Vehicle]
+
+    List split1 = scanData.split('&');
+    split1.forEach((value) {
+      List split2 = value.split('=');
+      print(split2[1]);
+      scanDataMap[split2[0]] = split2[1];
+    });
+
+    print('heloool ' + scanDataMap['type']);
+
+    if (int.parse(scanDataMap['type']) == 1) {
+      print('Portuser');
+      // Portuser
+      puser = await dbProvider.getPortuser(scanDataMap['uuid']);
+      return puser;
+    }
+
+    if (scanDataMap['type'] == 2) {
+      // Vehicle
+    }
+
+    return null;
+  }
+
+  Future<Portuser> fetchPortuser({String uuid}) async {
     DbProvider dbProvider = DbProvider.instance;
     Portuser puser;
-    puser = await dbProvider.getPortuser(int.parse(id));
+    puser = await dbProvider.getPortuser(uuid);
     return puser;
   }
 

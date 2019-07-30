@@ -26,8 +26,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
         ),
-        home: MyHomePage(title: 'AKSES.'),
-//        home: ScanUserPage(scanData: '1'),
+//        home: MyHomePage(title: 'AKSES.'),
+        home: ScanUserPage(scanData: 'type=1&uuid=88784c61-72f0-4034-85a8-354caa52bc7b'),
       ),
     );
   }

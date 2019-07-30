@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "name": "Apple Inc",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 2,
+    "name": "Google Alphabet",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 3,
+    "name": "Microsoft",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 4,
+    "name": "Amazon Prime",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 5,
+    "name": "Business News",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 6,
+    "name": "The Daily Show",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 7,
+    "name": "The Stranger Things",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 8,
+    "name": "Netflix",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 9,
+    "name": "Dreamworks",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 10,
+    "name": "Disney Plus",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  },
+  {
+    "id": 11,
+    "name": "Sheraton Management",
+    "created_at": 1564455145,
+    "updated_at":1564455145
+  }
+]
