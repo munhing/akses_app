@@ -1,9 +1,9 @@
+import 'package:akses_app/providers/portusers.dart';
+import 'package:akses_app/providers/vehicles.dart';
 import 'package:flutter/material.dart';
 import 'screens/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'notifiers/my_info.dart';
-import 'screens/scan_user_page.dart';
 
 Future main() async {
   // prevent app from rotating
@@ -17,7 +17,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          builder: (context) => MyInfo(),
+          builder: (context) => Portusers(),
+        ),
+        ChangeNotifierProvider(
+          builder: (context) => Vehicles(),
         ),
       ],
       child: MaterialApp(
@@ -26,8 +29,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
         ),
-//        home: MyHomePage(title: 'AKSES.'),
-        home: ScanUserPage(scanData: 'type=1&uuid=88784c61-72f0-4034-85a8-354caa52bc7b'),
+        home: MyHomePage(title: 'AKSES.'),
+//        home: ScanUserPage(scanData: 'type=1&uuid=88784c61-72f0-4034-85a8-354caa52bc7b'),
       ),
     );
   }

@@ -33,6 +33,7 @@ dependencies:
   cached_network_image: ^1.1.0
   flutter_cache_manager: ^1.1.0
   uuid: ^2.0.2
+  pusher: ^1.0.0
 
 dev_dependencies:
   flutter_test:

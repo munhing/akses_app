@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:akses_app/screens/portuser_list.dart';
+import 'package:akses_app/screens/vehicle_list.dart';
 import 'package:akses_app/screens/scan_user_page.dart';
-import 'package:akses_app/resources/db_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:akses_app/notifiers/my_info.dart';
 import 'package:akses_app/models/portuser.dart';
+import 'package:akses_app/utils/custom_page_transition.dart';
+import 'package:akses_app/providers/vehicles.dart';
+import 'package:akses_app/providers/portusers.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -55,11 +57,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final appInfo = Provider.of<MyInfo>(context);
+    final portuserProvider = Provider.of<Portusers>(context);
+    final vehicleProvider = Provider.of<Vehicles>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.refresh), onPressed: () {
+            Provider.of<Portusers>(context).fetchActivePortusers();
+            Provider.of<Vehicles>(context).fetchActiveVehicles();
+          })
+        ],
       ),
       body: Center(
         child: ListView(
@@ -81,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        print('People button was tab');
+                        print('Portuser button was tab');
                         navigateToList();
                       },
                       child: Card(
@@ -92,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Column(
                             children: <Widget>[
                               Text(
-                                appInfo.portuserCount.toString(),
+                                portuserProvider.count.toString(),
                                 style: TextStyle(fontSize: 80),
                               ),
                               Row(
@@ -113,28 +122,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Expanded(
-                    child: Card(
-                      elevation: 3.0,
-                      margin: EdgeInsets.all(10.0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              appInfo.vehicleCount.toString(),
-                              style: TextStyle(fontSize: 80),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.directions_car,
+                    child: GestureDetector(
+                      onTap: () {
+                        print('Vehicle button was tab');
+                        navigateToVehicleList();
+                      },
+                      child: Card(
+                        elevation: 3.0,
+                        margin: EdgeInsets.all(10.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                vehicleProvider.count.toString(),
+                                style: TextStyle(fontSize: 80),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.directions_car,
 //                                  size: 100.0,
-                                ),
-                                Text('Vehicles'),
-                              ],
-                            ),
-                          ],
+                                  ),
+                                  Text('Vehicles'),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -167,21 +182,30 @@ class _MyHomePageState extends State<MyHomePage> {
     if (portusers == null) {
       portusers = List<Portuser>();
       Future.delayed(Duration.zero).then((_) {
-        Provider.of<MyInfo>(context).initializeActivePortusersList();
+//        Provider.of<MyInfo>(context).initializeActivePortusersList();
+//        Provider.of<MyInfo>(context).initializeCompaniesList();
+        Provider.of<Vehicles>(context).fetchActiveVehicles();
+        Provider.of<Portusers>(context).fetchActivePortusers();
       });
     }
     super.initState();
   }
 
   void navigateToList() async {
+//    await Navigator.push(context, SlideUpRoute(page: PortuserListView()));
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return PortuserListView();
     }));
   }
 
-  void navigateToPortuserDetailPage(scanData) async {
+  void navigateToVehicleList() async {
+//    await Navigator.push(context, SlideUpRoute(page: PortuserListView()));
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ScanUserPage(scanData: scanData);
+      return VehicleListView();
     }));
+  }
+
+  void navigateToPortuserDetailPage(scanData) async {
+    await Navigator.push(context, SlideUpRoute(page: ScanUserPage(scanData: scanData)));
   }
 }

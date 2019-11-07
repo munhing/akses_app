@@ -1,85 +1,59 @@
 import 'package:flutter/foundation.dart';
+import 'company.dart';
 
 class Portuser {
-  final int id;
   final String uuid;
   final String name;
-  final int companyId;
-  final int expiresOn;
-  final int createdAt;
-  final int updatedAt;
-  int inOutStatus;
+  final Company company;
+  final String expiresOn;
+  final Photo photo;
+  final int active;
 
-  Portuser.fromJson(Map<String, dynamic> jsonMap)
-      : id = jsonMap['id'],
-        uuid = jsonMap['uuid'],
-        name = jsonMap['name'],
-        companyId = jsonMap['company_id'],
-        expiresOn = jsonMap['expires_on'],
-        createdAt = jsonMap['created_at'],
-        updatedAt = jsonMap['updated_at'],
-        inOutStatus = jsonMap['inOutStatus'];
+  Portuser({
+    @required this.uuid,
+    @required this.name,
+    this.company,
+    this.expiresOn,
+    this.photo,
+    this.active
+  });
 
-  Map<String, dynamic> toMap() {
-    var map = Map<String, dynamic>();
-    if (id != null) {
-      map['id'] = id;
+  factory Portuser.fromJson(Map<String, dynamic> parsedJson){
+
+    int isActive = 0;
+
+    if (parsedJson['active'] != null) {
+      isActive = 1;
     }
-    map['uuid'] = uuid;
-    map['name'] = name;
-    map['company_id'] = companyId;
-    map['expires_on'] = expiresOn;
-    map['created_at'] = createdAt;
-    map['updated_at'] = updatedAt;
-    map['inout_status'] = inOutStatus;
 
-    return map;
+    return Portuser(
+        uuid: parsedJson['uuid'],
+        name: parsedJson['name'],
+        company: Company.fromJson(parsedJson['company']),
+      expiresOn: parsedJson['expires_on'],
+      photo: Photo.fromJson(parsedJson['media'][0]),
+      active: isActive
+    );
   }
+}
 
-  Map<String, dynamic> toClockingMap({int clockingType}) {
-    var map = Map<String, dynamic>();
-    map['portuser_uuid'] = uuid;
-    map['clock_type'] = clockingType;
-    map['clock_time'] = DateTime.now().millisecondsSinceEpoch;
+class Photo {
+  final String url;
+  final String urlThumb;
 
-    return map;
+  Photo({
+    this.url,
+    this.urlThumb
+  });
+
+  factory Photo.fromJson(Map<String, dynamic> json){
+    return Photo(
+        url: json['url'],
+        urlThumb: json['url_thumb']
+    );
   }
+}
 
-  Map<String, dynamic> toActiveClockingMap({int clockingType}) {
-    var map = Map<String, dynamic>();
-    map['portuser_uuid'] = uuid;
+class Active {
 
-    return map;
-  }
-
-//
-  Portuser.fromDb(Map<String, dynamic> parsedJson)
-      : id = parsedJson['id'],
-        uuid = parsedJson['uuid'],
-        name = parsedJson['name'],
-        companyId = parsedJson['company_id'],
-        expiresOn = parsedJson['expires_on'],
-        createdAt = parsedJson['created_at'],
-        updatedAt = parsedJson['updated_at'],
-        inOutStatus = parsedJson['inout_status'];
-
-  Portuser.fromDbDuringInitialization(Map<String, dynamic> parsedJson)
-      : id = parsedJson['id'],
-        uuid = parsedJson['uuid'],
-        name = parsedJson['name'],
-        companyId = parsedJson['company_id'],
-        expiresOn = parsedJson['expires_on'],
-        createdAt = parsedJson['created_at'],
-        updatedAt = parsedJson['updated_at'],
-        inOutStatus = 1;
-
-  Portuser.fromDbWithActive(Map<String, dynamic> parsedJson)
-      : id = parsedJson['id'],
-        uuid = parsedJson['uuid'],
-        name = parsedJson['name'],
-        companyId = parsedJson['company_id'],
-        expiresOn = parsedJson['expires_on'],
-        createdAt = parsedJson['created_at'],
-        updatedAt = parsedJson['updated_at'],
-        inOutStatus = parsedJson['active'];
 }
